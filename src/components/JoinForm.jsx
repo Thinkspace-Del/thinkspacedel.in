@@ -93,13 +93,31 @@ export default function JoinForm() {
       queryValue = Number(value.replace(/\D/g, ""));
     }
 
-    const { data } = await supabase
-      .from("applicants")
-      .select("id")
-      .eq(field, queryValue)
-      .maybeSingle();
+  const [applicantsRes, buildersRes] = await Promise.all([
+      supabase
+        .from("applicants")
+    .select("id,status")
+        .eq(field, queryValue)
+        .maybeSingle(),
+      supabase
+        .from("builders")
+        .select("id")
+        .eq(field, queryValue)
+        .maybeSingle(),
+    ]);
 
-    if (data) {
+    // If either table errors, don't block typing; validation will still happen on submit.
+    const applicant = applicantsRes?.data ?? null;
+    const isRejectedApplicant =
+      applicant &&
+      String(applicant.status ?? "")
+        .trim()
+        .toLowerCase() === "rejected";
+
+    const buildersMatch = Boolean(buildersRes?.data);
+    const shouldBlock = buildersMatch || (Boolean(applicant) && !isRejectedApplicant);
+
+    if (shouldBlock) {
       setErrors((prev) => ({
         ...prev,
         [field]: `This ${field} is already in our system.`,

@@ -450,12 +450,17 @@ export default function AdminReview({ guardStatus, guardMessage } = {}) {
                     <div className="font-mono text-[10px] uppercase tracking-widest text-background/70">
                       Action by
                     </div>
-                    <input
+                    <select
                       value={adminName}
                       onChange={(e) => setAdminName(e.target.value)}
-                      placeholder="Your name"
-                      className="mt-2 w-full bg-background/10 border border-background/25 px-3 py-2 text-sm text-background placeholder:text-background/50 focus:outline-none focus:border-background/40"
-                    />
+                      className="mt-2 w-full bg-background/10 border border-background/25 px-3 py-2 text-sm text-background focus:outline-none focus:border-background/40"
+                    >
+                      <option value="" disabled>
+                        Select admin
+                      </option>
+                      <option value="Bhavya Dang">Bhavya Dang</option>
+                      <option value="Vijit Chandna">Vijit Chandna</option>
+                    </select>
                     {actionError && (
                       <div className="mt-2 text-xs text-destructive">
                         {actionError}
