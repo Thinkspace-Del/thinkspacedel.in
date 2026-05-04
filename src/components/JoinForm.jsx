@@ -57,7 +57,7 @@ export default function JoinForm() {
       const submitData = { ...formData };
       if (!submitData.links) delete submitData.links;
 
-      const { error } = await supabase.from("builders").insert([submitData]);
+      const { error } = await supabase.from("applicants").insert([submitData]);
 
       if (error) {
         console.error(error);
@@ -93,13 +93,31 @@ export default function JoinForm() {
       queryValue = Number(value.replace(/\D/g, ""));
     }
 
-    const { data } = await supabase
-      .from("builders")
-      .select("id")
-      .eq(field, queryValue)
-      .maybeSingle();
+  const [applicantsRes, buildersRes] = await Promise.all([
+      supabase
+        .from("applicants")
+    .select("id,status")
+        .eq(field, queryValue)
+        .maybeSingle(),
+      supabase
+        .from("builders")
+        .select("id")
+        .eq(field, queryValue)
+        .maybeSingle(),
+    ]);
 
-    if (data) {
+    // If either table errors, don't block typing; validation will still happen on submit.
+    const applicant = applicantsRes?.data ?? null;
+    const isRejectedApplicant =
+      applicant &&
+      String(applicant.status ?? "")
+        .trim()
+        .toLowerCase() === "rejected";
+
+    const buildersMatch = Boolean(buildersRes?.data);
+    const shouldBlock = buildersMatch || (Boolean(applicant) && !isRejectedApplicant);
+
+    if (shouldBlock) {
       setErrors((prev) => ({
         ...prev,
         [field]: `This ${field} is already in our system.`,
@@ -160,7 +178,9 @@ export default function JoinForm() {
             placeholder=""
           />
           {errors.name && (
-            <p className="text-destructive text-sm font-headline">{errors.name}</p>
+            <p className="text-destructive text-sm font-headline">
+              {errors.name}
+            </p>
           )}
         </div>
 
@@ -234,7 +254,9 @@ export default function JoinForm() {
             placeholder=""
           />
           {errors.craft && (
-            <p className="text-destructive text-sm font-headline">{errors.craft}</p>
+            <p className="text-destructive text-sm font-headline">
+              {errors.craft}
+            </p>
           )}
         </div>
 

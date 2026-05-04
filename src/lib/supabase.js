@@ -6,4 +6,11 @@ const supabaseUrl =
 const supabaseKey =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "placeholder-key";
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  global: {
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    },
+  },
+});
