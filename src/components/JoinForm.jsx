@@ -57,10 +57,16 @@ export default function JoinForm() {
       const submitData = { ...formData };
       if (!submitData.links) delete submitData.links;
 
-      const { error } = await supabase.from("applicants").insert([submitData]);
+      const res = await fetch("/.netlify/functions/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submitData),
+      });
 
-      if (error) {
-        console.error(error);
+      const payload = await res.json().catch(() => ({}));
+
+      if (!res.ok || payload?.ok === false) {
+        console.error(payload);
         setStatus("error");
       } else {
         setStatus("success");

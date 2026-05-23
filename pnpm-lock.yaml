@@ -20,6 +20,9 @@ importers:
       netlify-cli:
         specifier: ^26.0.0
         version: 26.0.0(@types/node@25.6.0)(picomatch@4.0.4)
+      nodemailer:
+        specifier: ^6.10.1
+        version: 6.10.1
       pixelarticons:
         specifier: ^2.1.0
         version: 2.1.0(react@19.2.5)
@@ -3656,6 +3659,10 @@ packages:
   node-stream-zip@1.15.0:
     resolution: {integrity: sha512-LN4fydt9TqhZhThkZIVQnF9cwjU3qmUH9h78Mx/K7d3VvfRqqwthLwJEUOEL0QPZ0XQmNN7be5Ggit5+4dq3Bw==}
     engines: {node: '>=0.12.0'}
+
+  nodemailer@6.10.1:
+    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
+    engines: {node: '>=6.0.0'}
 
   nopt@8.1.0:
     resolution: {integrity: sha512-ieGu42u/Qsa4TFktmaKEwM6MQH0pOWnaB3htzh0JRtx84+Mebc0cbZYN5bC+6WTZ4+77xrL9Pn5m7CV6VIkV7A==}
@@ -9163,6 +9170,8 @@ snapshots:
       '@babel/parser': 7.29.2
 
   node-stream-zip@1.15.0: {}
+
+  nodemailer@6.10.1: {}
 
   nopt@8.1.0:
     dependencies:
