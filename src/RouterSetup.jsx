@@ -42,7 +42,7 @@ function RouterSetup() {
   return (
     <Routes>
       <Route path="/" element={<App />} />
-      <Route path="/admin/review" element={<AdminReviewGuard />} />
+      <Route path="/admin/" element={<AdminReviewGuard />} />
     </Routes>
   );
 }
