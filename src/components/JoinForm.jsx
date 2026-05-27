@@ -14,6 +14,9 @@ const joinSchema = z.object({
   email: z.email({ message: "Invalid email address." }),
   phone: z
     .string()
+    .regex(/^\d+$/, {
+      message: "Phone number must contain digits only (0-9).",
+    })
     .min(10, { message: "Valid phone number is required." })
     .max(10, { message: "Phone number should only contain 10 digits." }),
   craft: z
@@ -32,6 +35,8 @@ export default function JoinForm() {
   });
   const [status, setStatus] = useState("idle");
   const [errors, setErrors] = useState({});
+
+  const normalizePhone = (value) => String(value ?? "").replace(/\D/g, "").slice(0, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,9 +90,11 @@ export default function JoinForm() {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: null });
+    const { name, value } = e.target;
+    const nextValue = name === "phone" ? normalizePhone(value) : value;
+    setFormData({ ...formData, [name]: nextValue });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
     }
   };
 
@@ -227,6 +234,8 @@ export default function JoinForm() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              inputMode="numeric"
+              pattern="[0-9]*"
               className={`w-full bg-muted border-0 border-b-2 border-foreground/30 hover:border-b-primary focus:border-b-primary focus:outline-none px-4 py-3 font-sans transition-colors rounded-t text-foreground ${errors.phone ? "border-b-destructive" : ""}`}
               placeholder=""
               onBlur={() => {

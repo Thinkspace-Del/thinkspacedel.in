@@ -14,9 +14,11 @@ function App() {
       ([entry]) => {
         // Show navbar action only when hero button is NOT intersecting (scrolled past)
         // and we are below the button (boundingClientRect.top < 0)
-        setShowNavbarAction(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+        setShowNavbarAction(
+          !entry.isIntersecting && entry.boundingClientRect.top < 0,
+        );
       },
-      { threshold: 0 }
+      { threshold: 0 },
     );
 
     if (heroButtonRef.current) {
@@ -42,7 +44,7 @@ function App() {
           {isDark ? <Sun size={24} /> : <Moon size={24} />}
         </button>
 
-        <main className="pt-16 overflow-hidden">
+        <main className="pt-16 mt-4 overflow-hidden">
           {/* 01. HERO: Emotional Hook */}
           <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-24 border-b border-border/10">
             <div className="max-w-7xl mx-auto w-full">
@@ -51,7 +53,9 @@ function App() {
                   <div className="space-y-4">
                     <h1 className="text-6xl md:text-8xl lg:text-9xl font-headline font-bold tracking-tighter leading-[0.9]">
                       Don't let your day <br />
-                      <span className="text-destructive italic">sweep away.</span>
+                      <span className="text-destructive italic">
+                        sweep away.
+                      </span>
                     </h1>
                   </div>
                   <div className="max-w-xl space-y-8">
@@ -114,11 +118,11 @@ function App() {
                 </h2>
                 <div className="h-2 w-24 bg-primary"></div>
                 <p className="text-muted-foreground text-xl leading-relaxed">
-                  Thinkspace is a community like no other, we welcome thinkers and
-                  creators of all kinds to come and share their experience, ideas
-                  and innovations! We truly believe that the best outcomes come
-                  when you share your ideas and ideate over them with people of
-                  all backgrounds.
+                  Thinkspace is a community like no other, we welcome thinkers
+                  and creators of all kinds to come and share their experience,
+                  ideas and innovations! We truly believe that the best outcomes
+                  come when you share your ideas and ideate over them with
+                  people of all backgrounds.
                 </p>
               </div>
             </div>
@@ -142,9 +146,9 @@ function App() {
                   </h2>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
                     <p className="text-xl md:text-2xl opacity-80 leading-relaxed">
-                      The best ideas don't happen in a vacuum. We organize meetups
-                      for creative people of all backgrounds to tear into projects
-                      and discuss new themes.
+                      The best ideas don't happen in a vacuum. We organize
+                      meetups for creative people of all backgrounds to tear
+                      into projects and discuss new themes.
                     </p>
                     <p className="text-xl md:text-2xl opacity-80 leading-relaxed">
                       We’re here to stop sleeping on our potential and start
