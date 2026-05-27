@@ -76,6 +76,13 @@ function safeLinkHref(raw) {
   return "";
 }
 
+function normalizeUrl(url) {
+  const v = String(url ?? "").trim();
+  if (!v) return "";
+  if (!v.startsWith("http")) return `https://${v}`;
+  return v;
+}
+
 function safeTrim(value) {
   return (value == null ? "" : String(value)).trim();
 }
@@ -83,7 +90,11 @@ function safeTrim(value) {
 export default function AdminReview({ guardStatus, guardMessage } = {}) {
   const [statusFilter, setStatusFilter] = useState("pending");
   const [selectedId, setSelectedId] = useState(null);
-  const [adminName, setAdminName] = useState("");
+  const ADMIN_NAME_OPTIONS = useMemo(
+    () => ["Bhavya Dang", "Vijit Chandna"],
+    [],
+  );
+  const [adminName, setAdminName] = useState(ADMIN_NAME_OPTIONS[0]);
   const [hasAdminKey, setHasAdminKey] = useState(() =>
     Boolean(getStoredAdminKey()),
   );
@@ -91,6 +102,7 @@ export default function AdminReview({ guardStatus, guardMessage } = {}) {
   const [adminKeyDraft, setAdminKeyDraft] = useState("");
   const [actionStatus, setActionStatus] = useState("idle");
   const [actionError, setActionError] = useState("");
+  const [actionNotice, setActionNotice] = useState("");
   const [rowsRaw, setRowsRaw] = useState([]);
   const [loadStatus, setLoadStatus] = useState("idle");
   const [loadError, setLoadError] = useState("");
@@ -162,6 +174,7 @@ export default function AdminReview({ guardStatus, guardMessage } = {}) {
   async function runAdminAction(type) {
     if (!selected) return;
     setActionError("");
+    setActionNotice("");
 
     const name = adminName.trim();
     if (!name) {
@@ -171,21 +184,39 @@ export default function AdminReview({ guardStatus, guardMessage } = {}) {
 
     setActionStatus(type === "approve" ? "approving" : "rejecting");
     try {
+      const normalizedLinks =
+        type === "approve" ? normalizeUrl(selected?.links) : undefined;
+
       await adminInvoke(type === "approve" ? "admin-approve" : "admin-reject", {
         method: "POST",
-        body: { applicantId: selected.id, approvedBy: name },
+        body: {
+          applicantId: selected.id,
+          approvedBy: name,
+          ...(type === "approve" ? { links: normalizedLinks } : {}),
+        },
       });
 
       setRowsRaw((prev) =>
         prev.map((r) => {
           if (r.id !== selected.id) return r;
           return type === "approve"
-            ? { ...r, role: "builder", status: "approved" }
+            ? {
+                ...r,
+                role: "builder",
+                status: "approved",
+                ...(normalizedLinks ? { links: normalizedLinks } : {}),
+              }
             : { ...r, status: "rejected" };
         }),
       );
 
       setActionStatus("idle");
+      setActionNotice(
+        type === "approve"
+          ? "Approved successfully."
+          : "Rejected successfully.",
+      );
+      window.setTimeout(() => setActionNotice(""), 2500);
       closeModal();
     } catch (e) {
       setActionError(e?.message || "Action failed.");
@@ -204,6 +235,14 @@ export default function AdminReview({ guardStatus, guardMessage } = {}) {
         <div className="max-w-7xl mx-auto h-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start h-full">
             <section className="lg:col-span-12 h-full min-h-0 flex flex-col">
+              {actionNotice && (
+                <div className="mb-6 border border-border/30 bg-card/30 backdrop-blur-sm p-4 text-sm">
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    Action
+                  </div>
+                  <div className="mt-1 text-foreground">{actionNotice}</div>
+                </div>
+              )}
               {showGuardBanner && (
                 <div className="mb-6 border border-border/30 bg-card/30 backdrop-blur-sm p-4 text-sm text-muted-foreground">
                   <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -455,11 +494,11 @@ export default function AdminReview({ guardStatus, guardMessage } = {}) {
                       onChange={(e) => setAdminName(e.target.value)}
                       className="mt-2 w-full bg-background/10 border border-background/25 px-3 py-2 text-sm text-background focus:outline-none focus:border-background/40"
                     >
-                      <option value="" disabled>
-                        Select admin
-                      </option>
-                      <option value="Bhavya Dang">Bhavya Dang</option>
-                      <option value="Vijit Chandna">Vijit Chandna</option>
+                      {ADMIN_NAME_OPTIONS.map((name) => (
+                        <option key={name} value={name}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                     {actionError && (
                       <div className="mt-2 text-xs text-destructive">

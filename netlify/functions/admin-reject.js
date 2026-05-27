@@ -1,4 +1,8 @@
 import { getSupabaseAdmin, json, requireAdminKey } from "./_adminShared.js";
+import {
+  sendAdminNotificationEmail,
+  sendApplicantRejectedEmail,
+} from "./_smtpEmail.js";
 
 export const handler = async (event) => {
   const denied = requireAdminKey(event);
@@ -26,10 +30,37 @@ export const handler = async (event) => {
     return json(400, { ok: false, error: "Missing applicantId" });
   if (!approvedBy) return json(400, { ok: false, error: "Missing approvedBy" });
 
+  // Fetch applicant for email context (best-effort; rejection should still proceed)
+  let applicant = null;
+  try {
+    const { data } = await supabase
+      .from("applicants")
+      .select("id, name, email, phone, craft, links, created_at")
+      .eq("id", applicantId)
+      .maybeSingle();
+    applicant = data ?? null;
+  } catch {
+    applicant = null;
+  }
+
   await supabase
     .from("applicants")
     .update({ status: "rejected" })
     .eq("id", applicantId);
+
+  // Emails (best-effort)
+  try {
+    await Promise.all([
+      sendApplicantRejectedEmail({ applicant }),
+      sendAdminNotificationEmail({
+        type: "rejected",
+        applicant,
+        approvedBy,
+      }),
+    ]);
+  } catch (e) {
+    console.warn("Email send skipped/failed:", e?.message || e);
+  }
 
   return json(200, { ok: true });
 };

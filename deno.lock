@@ -23,6 +23,7 @@
         "npm:globals@^17.5.0",
         "npm:lucide-react@^1.8.0",
         "npm:netlify-cli@26",
+        "npm:nodemailer@^6.10.1",
         "npm:pixelarticons@^2.1.0",
         "npm:react-dom@^19.2.5",
         "npm:react-router-dom@^7.14.1",

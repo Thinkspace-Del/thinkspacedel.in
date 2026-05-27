@@ -1,4 +1,15 @@
 import { getSupabaseAdmin, json, requireAdminKey } from "./_adminShared.js";
+import {
+  sendAdminNotificationEmail,
+  sendApplicantApprovedEmail,
+} from "./_smtpEmail.js";
+
+function normalizeUrl(url) {
+  const v = String(url ?? "").trim();
+  if (!v) return null;
+  if (!v.startsWith("http")) return `https://${v}`;
+  return v;
+}
 
 export const handler = async (event) => {
   const denied = requireAdminKey(event);
@@ -44,7 +55,7 @@ export const handler = async (event) => {
     email: applicant.email ?? null,
     phone: applicant.phone ?? null,
     craft: applicant.craft ?? null,
-    links: applicant.links ?? null,
+    links: normalizeUrl(applicant.links) ?? null,
     role: "builder",
     approvedBy,
     approvedOn: nowIso,
@@ -60,6 +71,20 @@ export const handler = async (event) => {
     .from("applicants")
     .update({ role: "builder", status: "approved" })
     .eq("id", applicantId);
+
+  // 4) Emails (best-effort)
+  try {
+    await Promise.all([
+      sendApplicantApprovedEmail({ applicant, approvedBy }),
+      sendAdminNotificationEmail({
+        type: "approved",
+        applicant,
+        approvedBy,
+      }),
+    ]);
+  } catch (e) {
+    console.warn("Email send skipped/failed:", e?.message || e);
+  }
 
   return json(200, { ok: true, approvedOn: nowIso });
 };
