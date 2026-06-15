@@ -5,9 +5,7 @@ export default function Footer() {
     <footer className="w-full py-12 px-6 md:px-24 bg-surface-container-low border-t border-on-surface/5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8 w-full text-on-surface">
         <div className="space-y-4">
-          <div className="text-lg font-black font-headline">
-            Thinkspace
-          </div>
+          <div className="text-lg font-black font-headline">Thinkspace</div>
           <p className="font-mono text-xs uppercase tracking-widest text-on-surface-variant opacity-70">
             © Keep thinking. Keep Building.
           </p>
@@ -18,21 +16,21 @@ export default function Footer() {
               Social
             </p>
             <div className="flex flex-col gap-2">
-              <a
+              {/* <a
                 className="font-mono text-xs uppercase tracking-widest text-on-surface-variant hover:text-primary underline decoration-2 underline-offset-4 transition-all"
                 href="#"
               >
                 Twitter
-              </a>
+              </a>*/}
               <a
                 className="font-mono text-xs uppercase tracking-widest text-on-surface-variant hover:text-primary underline decoration-2 underline-offset-4 transition-all"
-                href="#"
+                href="https://instagram.com/thinkspacedel"
               >
                 Instagram
               </a>
               <a
                 className="font-mono text-xs uppercase tracking-widest text-on-surface-variant hover:text-primary underline decoration-2 underline-offset-4 transition-all"
-                href="#"
+                href="https://github.com/Thinkspace-Del"
               >
                 GitHub
               </a>
