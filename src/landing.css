@@ -1,0 +1,499 @@
+/*
+ * Landing page (design: "Thinkspace Landing v3" — the letter layout).
+ * Everything is scoped under .ts-landing so the admin console and the
+ * global Tailwind tokens in index.css are untouched.
+ */
+
+.ts-landing {
+  --font-body: "Inter", system-ui, sans-serif;
+  --rule-fade: 48px;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Theme follows the visitor's system setting — dark by default. */
+.ts-landing {
+  --bg: oklch(0.22 0 0);
+  --fg: #e9e9ed;
+  --mute: #cfd3e5;
+  --mute2: #9397ab;
+  --rule: color-mix(in srgb, #e9e9ed 16%, transparent);
+  --acc: oklch(0.6152 0.1657 27);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  .ts-landing {
+    --bg: #f4f1ea;
+    --fg: #161826;
+    --mute: #595d6c;
+    --mute2: #75798c;
+    --rule: rgba(22, 24, 38, 0.14);
+    --acc: oklch(0.54 0.17 27);
+    color-scheme: light;
+  }
+}
+
+/* Keep the area behind the page (overscroll, safe areas) on theme too. */
+body:has(.ts-landing) {
+  background: oklch(0.22 0 0);
+}
+@media (prefers-color-scheme: light) {
+  body:has(.ts-landing) {
+    background: #f4f1ea;
+  }
+}
+
+.ts-landing *,
+.ts-landing *::before,
+.ts-landing *::after {
+  box-sizing: border-box;
+}
+
+.ts-landing :focus {
+  outline: none;
+}
+.ts-landing :focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+.ts-landing ::selection {
+  background: color-mix(in srgb, var(--acc) 30%, transparent);
+}
+
+/* ── the letter column ──────────────────────────────────── */
+.ts-col {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 64px;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.ts-col > * {
+  min-width: 0;
+}
+
+/* Rules fade out at the trailing end, like the design system's .hr */
+.ts-rule-bottom,
+.ts-rule-top {
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  background-image: linear-gradient(to right, var(--rule), transparent);
+}
+.ts-rule-bottom {
+  background-position: bottom;
+}
+.ts-rule-top {
+  background-position: top;
+}
+
+.ts-from {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 48px;
+  padding-bottom: 18px;
+}
+.ts-avatar {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 50%;
+  background: #0d0f17 url(/assets/sender.png) center / cover;
+}
+.ts-from-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 15px;
+}
+.ts-from-name {
+  font-weight: 500;
+}
+.ts-from-to {
+  color: var(--mute2);
+  font-size: 13px;
+}
+
+.ts-h1 {
+  margin: 24px 0 20px;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+.ts-h1 span {
+  color: var(--mute2);
+}
+
+.ts-hero {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0d0f17;
+}
+.ts-hero-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ts-hero-stage {
+  overflow: hidden;
+  container-type: size;
+  pointer-events: none;
+  filter: grayscale(1) contrast(1.15) brightness(0.8);
+}
+.ts-hero-still {
+  object-fit: cover;
+  filter: blur(4px);
+  animation: ts-drift 22s ease-in-out infinite;
+}
+.ts-hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100cqw, 177.78cqh);
+  height: max(100cqh, 56.25cqw);
+  transform: translate(-50%, -50%) scale(1.4);
+  border: 0;
+  pointer-events: none;
+}
+.ts-hero-tint {
+  background: oklch(0.55 0.23 28);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+@keyframes ts-drift {
+  0% {
+    transform: scale(1.08) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.18) translate(-2%, 1.5%);
+  }
+  100% {
+    transform: scale(1.08) translate(0, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ts-hero-still {
+    animation: none;
+  }
+}
+
+.ts-p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.ts-p-lead {
+  margin-top: 24px;
+}
+.ts-p span,
+.ts-mute {
+  color: var(--mute);
+}
+.ts-promises {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 18px;
+}
+.ts-apply-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: 12px;
+  font-size: 17px;
+  color: var(--acc);
+  text-underline-offset: 4px;
+}
+.ts-apply-link:hover {
+  filter: brightness(1.15);
+}
+
+/* ── apply section / form ───────────────────────────────── */
+.ts-apply {
+  margin-top: 48px;
+  padding-top: 32px;
+  scroll-margin-top: 24px;
+}
+.ts-h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+.ts-apply-sub {
+  margin: 0 0 28px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--mute);
+}
+
+.ts-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ts-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+.ts-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: var(--mute);
+}
+.ts-field label .ts-opt {
+  color: var(--mute2);
+}
+.ts-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 16px; /* 16px stops iOS zooming into the field */
+  color: var(--fg);
+  caret-color: var(--acc);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+.ts-input::placeholder {
+  color: var(--mute2);
+}
+.ts-input:hover {
+  border-color: color-mix(in srgb, var(--fg) 45%, transparent);
+}
+.ts-input:focus-visible {
+  border-color: var(--acc);
+  outline-offset: 0;
+}
+.ts-input[aria-invalid="true"] {
+  border-color: var(--acc);
+}
+.ts-error {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--acc);
+}
+.ts-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+  padding: 12px 22px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--acc);
+  background: transparent;
+  border: 1px solid var(--acc);
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.ts-btn:hover {
+  background: color-mix(in srgb, var(--acc) 12%, transparent);
+}
+.ts-btn:active {
+  background: color-mix(in srgb, var(--acc) 22%, transparent);
+}
+.ts-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ts-form-error {
+  margin: 0;
+  font-size: 14px;
+  color: var(--acc);
+}
+
+.ts-thanks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ts-thanks p {
+  margin: 0;
+}
+
+/* ── sign-off ───────────────────────────────────────────── */
+.ts-signoff {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 56px;
+}
+.ts-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+}
+.ts-foot-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: -12px;
+}
+.ts-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+.ts-social:hover {
+  color: var(--acc);
+}
+.ts-contact {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
+  font-size: 15px;
+  color: var(--acc);
+  text-decoration: none;
+}
+.ts-contact:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ts-made {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--mute2);
+}
+.ts-made svg {
+  flex: none;
+  fill: var(--acc);
+}
+
+/* ── tablet / desktop ───────────────────────────────────── */
+@media (min-width: 768px) {
+  .ts-col {
+    max-width: 688px; /* 640px letter + 24px gutters */
+    margin: 96px auto 0;
+    padding: 0 24px 96px;
+  }
+  .ts-rule-bottom,
+  .ts-rule-top {
+    background-image: linear-gradient(
+      to right,
+      var(--rule),
+      var(--rule) calc(100% - var(--rule-fade)),
+      transparent
+    );
+  }
+  .ts-from {
+    margin-top: 0;
+    padding-bottom: 24px;
+    gap: 14px;
+  }
+  .ts-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .ts-from-to {
+    font-size: 14px;
+  }
+  .ts-h1 {
+    margin: 32px 0 28px;
+    font-size: 36px;
+  }
+  .ts-p {
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  .ts-p-lead {
+    margin-top: 32px;
+  }
+  .ts-promises {
+    gap: 20px;
+    margin-top: 24px;
+  }
+  .ts-apply-link {
+    margin-top: 28px;
+    font-size: 18px;
+  }
+  .ts-apply {
+    margin-top: 72px;
+    padding-top: 40px;
+  }
+  .ts-h2 {
+    margin-bottom: 8px;
+    font-size: 24px;
+  }
+  .ts-apply-sub {
+    margin-bottom: 32px;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .ts-form {
+    gap: 20px;
+  }
+  .ts-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .ts-input {
+    min-height: 44px;
+  }
+  .ts-btn {
+    width: auto;
+    align-self: flex-start;
+  }
+  .ts-signoff {
+    gap: 14px;
+    margin-top: 72px;
+  }
+  .ts-foot {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 28px;
+    padding-top: 20px;
+  }
+  .ts-foot-links {
+    margin-left: 0;
+  }
+  .ts-made {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1100px) {
+  /* The design's desktop composition: a 640px letter offset 240px from the
+     left at 1280px wide, scaling down with the viewport. */
+  .ts-col {
+    max-width: 640px;
+    margin-left: clamp(24px, 18.75vw, 240px);
+    margin-right: 0;
+    padding-inline: 0;
+  }
+}

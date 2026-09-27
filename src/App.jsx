@@ -1,232 +1,136 @@
-import React, { useState, useEffect, useRef } from "react";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import React, { useEffect } from "react";
 import JoinForm from "./components/JoinForm";
-import { Quote, Moon, Sun } from "lucide-react";
+import HeroMedia from "./components/HeroMedia";
+import "./landing.css";
+
+const FONT_HREF =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
+
+const PROMISES = [
+  {
+    title: "Post the messy stuff.",
+    body: "Half-done drafts, broken builds, sketches you're not sure about. That's what it's for.",
+  },
+  {
+    title: "Get real feedback.",
+    body: "From people who make things too, and will tell you what isn't working.",
+  },
+  {
+    title: "Watch other people get stuck.",
+    body: "And unstuck. It helps more than you would think.",
+  },
+  {
+    title: "Find people to make things with.",
+    body: "Some ideas need more than one pair of hands.",
+  },
+];
+
+function LoveIcon({ width = 14, height = 12 }) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 7 6"
+      shapeRendering="crispEdges"
+      aria-label="love"
+    >
+      <path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" />
+    </svg>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 256 256" fill="currentColor">
+      <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z" />
+    </svg>
+  );
+}
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
-  const [showNavbarAction, setShowNavbarAction] = useState(false);
-  const heroButtonRef = useRef(null);
-
+  // Inter is only loaded while the landing page is mounted so the admin
+  // console keeps rendering exactly as it does today.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Show navbar action only when hero button is NOT intersecting (scrolled past)
-        // and we are below the button (boundingClientRect.top < 0)
-        setShowNavbarAction(
-          !entry.isIntersecting && entry.boundingClientRect.top < 0,
-        );
-      },
-      { threshold: 0 },
-    );
-
-    if (heroButtonRef.current) {
-      observer.observe(heroButtonRef.current);
-    }
-
-    return () => observer.disconnect();
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = FONT_HREF;
+    document.head.appendChild(link);
+    return () => link.remove();
   }, []);
 
   return (
-    <div
-      className={`${isDark ? "dark" : ""} font-sans selection:bg-primary selection:text-primary-foreground transition-colors duration-500`}
-    >
-      <div className="bg-background text-foreground min-h-screen relative">
-        <Navbar showAction={showNavbarAction} />
+    <div className="ts-landing">
+      <main className="ts-col">
+        <div className="ts-from ts-rule-bottom">
+          <div className="ts-avatar" aria-hidden="true" />
+          <div className="ts-from-meta">
+            <span className="ts-from-name">Thinkspace</span>
+            <span className="ts-from-to">to you</span>
+          </div>
+        </div>
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className="fixed bottom-8 right-8 z-[100] bg-primary text-primary-foreground p-4 shadow-xl hover:scale-110 active:scale-95 transition-all rounded-full"
-          aria-label="Toggle Theme"
-        >
-          {isDark ? <Sun size={24} /> : <Moon size={24} />}
-        </button>
+        <h1 className="ts-h1">
+          Ideas don't die. <span>They stall.</span>
+        </h1>
 
-        <main className="pt-16 mt-4 overflow-hidden">
-          {/* 01. HERO: Emotional Hook */}
-          <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-24 border-b border-border/10">
-            <div className="max-w-7xl mx-auto w-full">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
-                <div className="lg:col-span-7 space-y-12">
-                  <div className="space-y-4">
-                    <h1 className="text-6xl md:text-8xl lg:text-9xl font-headline font-bold tracking-tighter leading-[0.9]">
-                      Don't let your day <br />
-                      <span className="text-destructive italic">
-                        sweep away.
-                      </span>
-                    </h1>
-                  </div>
-                  <div className="max-w-xl space-y-8">
-                    <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
-                      It's easy to stay horizontal—blindly consuming in bed,
-                      letting your day sweep away while your passions stay
-                      dormant. You've slept on your interests for too long.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-6 items-start">
-                      <a
-                        ref={heroButtonRef}
-                        href="#join"
-                        className="bg-primary text-primary-foreground px-10 py-4 rounded-none font-bold text-lg tracking-tight active:scale-95 transition-all shadow-lg font-headline"
-                      >
-                        Start Building
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="lg:col-span-5 relative group">
-                  <div className="aspect-4/5 bg-card overflow-hidden shadow-xl border-4 border-foreground">
-                    <img
-                      alt="Gritty workspace"
-                      className="w-full h-full object-cover grayscale contrast-125 opacity-90 group-hover:grayscale-0 transition-all duration-700"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuANjn9pQMNSVkJuVQWs3zmKtv7szCcvQU3G9TpanuAqFJiKP0or2z225WLiCqeHnJbRtuhXb1S9pQNY5bLxz5i7_10OMZUZtvU8fS0Qc6yI-3hYoFurtlLxt9ZtUEDGq7xhjeDltfBUl8tWTHAFyVu_-Plqtn4_1CGrhkmN65yqZgImQGOseq_IQmXYj7i0kUq0Ppczsbwk7Zy9s6f9tDWP2MFOEVMdzCfTDdhDyB6XB7DZ9cwJwuXidL_XALC0tIIMRQxwq1WcGIed"
-                    />
-                  </div>
-                  <div className="absolute -bottom-6 -right-4 bg-card p-6 shadow-xl border-4 border-foreground z-10">
-                    <p className="font-mono text-[10px] text-primary mb-2">
-                      The Space temple
-                    </p>
-                    <p className="text-sm text-muted-foreground leading-tight italic">
-                      This room is an extension of my mind
-                    </p>
-                  </div>
-                </div>
-              </div>
+        <HeroMedia />
+
+        <p className="ts-p ts-p-lead">
+          Making things on your own is hard. You get a great idea, start working
+          on it, and somewhere halfway you hit a wall, lose motivation, or run
+          out of steam.{" "}
+          <span>
+            The idea gets lost. We're building a place to keep that momentum
+            alive.
+          </span>
+        </p>
+
+        <div className="ts-promises">
+          {PROMISES.map((p) => (
+            <p className="ts-p" key={p.title}>
+              {p.title} <span>{p.body}</span>
+            </p>
+          ))}
+        </div>
+
+        <a className="ts-apply-link" href="#join">
+          Apply to join
+        </a>
+
+        <section id="join" className="ts-apply ts-rule-top">
+          <h2 className="ts-h2">Sounds like your thing?</h2>
+          <p className="ts-apply-sub">
+            Half-finished is fine. Just an idea is fine. Tell us what you're
+            making.
+          </p>
+          <JoinForm />
+        </section>
+
+        <footer className="ts-signoff">
+          <div className="ts-foot ts-rule-top">
+            <div className="ts-foot-links">
+              <a
+                className="ts-social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+              >
+                <InstagramIcon />
+              </a>
+              <a
+                className="ts-contact"
+                href="mailto:comms.thinkspace@gmail.com"
+              >
+                Contact us
+              </a>
             </div>
-          </section>
-
-          {/* 02. IDENTITY: The Gathering */}
-          <section className="bg-muted py-[108px] px-6 md:px-24">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div className="relative group">
-                <div className="aspect-4/5 bg-card overflow-hidden shadow-xl border-4 border-foreground">
-                  <img
-                    alt="Focused creative hands"
-                    className="w-full h-full object-cover grayscale group-hover:scale-105 transition-transform duration-700"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuepU3jNn5RG-cqGM6nI0QpYazfJCPPubU36EdlPSCKpv2TyZCgfHFnG0nmwAY-SdoYoSd56g0dZ_zWQLbyatgXbBDPTihoOb9xKzGyzNDk1LHWoMxPuhqFJW1ZyvUDDooryyPYTePAoWKirm9Wr2q-twq5_7GKgnfWm4BEDyzNvRoqh79CpQSF2b2cm4bXP7QlOp2HY3ijLH9hPSYNNtzplX8SnSYJ7MRDHI1SsjOV8Dg3OnIiLOMzgRSPPRHrGWFLmhdwgjnOBw"
-                  />
-                </div>
-              </div>
-              <div className="space-y-8">
-                <div className="inline-block px-3 py-1 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-widest">
-                  The Definition
-                </div>
-                <h2 className="font-bold text-4xl md:text-6xl tracking-tight leading-tight font-headline">
-                  A gathering for people who realized that the only way to learn
-                  is to build.
-                </h2>
-                <div className="h-2 w-24 bg-primary"></div>
-                <p className="text-muted-foreground text-xl leading-relaxed">
-                  Thinkspace is a community like no other, we welcome thinkers
-                  and creators of all kinds to come and share their experience,
-                  ideas and innovations! We truly believe that the best outcomes
-                  come when you share your ideas and ideate over them with
-                  people of all backgrounds.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* 03. THE COLLECTIVE: One Table */}
-          <section className="py-[108px] px-6 md:px-24 bg-background">
-            <div className="max-w-7xl mx-auto">
-              <div className="dark relative overflow-hidden bg-background text-foreground p-12 md:p-24 min-h-[550px] flex flex-col justify-center group shadow-2xl border-4 border-primary">
-                <img
-                  alt="Shared creative workspace"
-                  className="absolute inset-0 w-full h-full object-cover grayscale opacity-10 contrast-150"
-                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop"
-                />
-                <div className="relative z-10 max-w-5xl">
-                  <h2 className="text-5xl md:text-7xl lg:text-7xl font-bold tracking-tighter leading-[0.9] mb-16 font-headline">
-                    Artist, developer, songwriter, photographer. <br />
-                    <span className="text-primary italic pt-3">
-                      It doesn't matter.
-                    </span>
-                  </h2>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-                    <p className="text-xl md:text-2xl opacity-80 leading-relaxed">
-                      The best ideas don't happen in a vacuum. We organize
-                      meetups for creative people of all backgrounds to tear
-                      into projects and discuss new themes.
-                    </p>
-                    <p className="text-xl md:text-2xl opacity-80 leading-relaxed">
-                      We’re here to stop sleeping on our potential and start
-                      learning from the people who think nothing like us. You
-                      won't know what you're capable of until you get up and
-                      build.
-                    </p>
-                  </div>
-                  <div className="mt-20 pt-10 border-t border-foreground/20 flex flex-wrap gap-8 items-center justify-between">
-                    <div className="flex items-center gap-2 font-mono text-[10px] opacity-60 uppercase">
-                      <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center animate-pulse">
-                        ●
-                      </span>
-                      Photo by{" "}
-                      <a href="https://unsplash.com/@headwayio?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                        Headway
-                      </a>{" "}
-                      on{" "}
-                      <a href="https://unsplash.com/photos/black-smartphone-near-person-5QgIuuBxKwM?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                        Unsplash
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* 04. BREAKER: The Jobs Quote */}
-          <section className="py-[108px] px-6 md:px-24 bg-primary text-primary-foreground">
-            <div className="max-w-5xl mx-auto relative">
-              <Quote className="w-32 h-32 opacity-10 absolute -top-12 -left-12 rotate-180" />
-              <blockquote className="font-bold text-4xl md:text-6xl leading-tight relative z-10 font-headline">
-                "Remembering that you are going to die is the best way I know to
-                avoid the trap of thinking you have something to lose. You are
-                already naked. There is no reason not to follow your heart."
-              </blockquote>
-              <div className="mt-12 font-mono text-sm tracking-widest uppercase opacity-60">
-                — Steve Jobs
-              </div>
-            </div>
-          </section>
-
-          {/* 05. RESOLUTION: Final Call with Embedded Form */}
-          <section
-            id="join"
-            className="py-[108px] lg:py-[170px] bg-background overflow-hidden"
-          >
-            <div className="max-w-7xl mx-auto px-6 md:px-24 text-foreground">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
-                <div className="lg:sticky lg:top-32">
-                  <h2 className="text-6xl md:text-8xl lg:text-8xl font-bold tracking-tighter leading-[0.9] mb-12 font-headline">
-                    Stop dreaming. <br />
-                    <span className="text-primary">Start building.</span>
-                  </h2>
-                  <div className="space-y-6 max-w-md">
-                    <p className="text-xl text-muted-foreground leading-relaxed">
-                      Capacity is strictly regulated to maintain high kinetic
-                      energy. We review applications weekly.
-                    </p>
-                    <div className="flex items-center gap-4 text-primary font-mono text-sm uppercase tracking-widest">
-                      <span className="w-12 h-px bg-primary"></span>
-                      Registration Open
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card p-8 md:p-12 shadow-2xl border-4 border-foreground relative">
-                  <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
-                  <JoinForm />
-                </div>
-              </div>
-            </div>
-          </section>
-        </main>
-
-        <Footer />
-      </div>
+            <span className="ts-made">
+              made with <LoveIcon /> in delhi
+            </span>
+          </div>
+        </footer>
+      </main>
     </div>
   );
 }
