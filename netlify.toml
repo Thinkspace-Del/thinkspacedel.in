@@ -3,6 +3,13 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[build.environment]
+  # SMTP_USER is the outgoing-mail account address, comms.thinkspace@gmail.com,
+  # which is also shown publicly as the site's "Contact us" mailto link. It's
+  # not a secret, so it's exempted here to stop the build-time secrets scanner
+  # from failing on that intentional match.
+  SECRETS_SCAN_OMIT_KEYS = "SMTP_USER"
+
 [dev]
   command = "pnpm run dev:vite"
   targetPort = 5173
