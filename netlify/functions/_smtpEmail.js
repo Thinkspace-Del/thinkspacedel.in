@@ -96,15 +96,33 @@ export async function sendApplicantReceivedEmail({ applicant }) {
   if (!to) return { skipped: true };
 
   const name = String(applicant?.name || "there").trim() || "there";
+  const safeName = escapeHtml(name);
+  const waLink = getWhatsAppCommunityLink();
+  const waLinkSafe = escapeHtml(waLink);
 
   await sendEmail({
     to,
-    subject: "Application received — Thinkspace",
+    subject: "Welcome to Thinkspace, here's your link",
     html: `
       <div style="font-family: ui-sans-serif, system-ui; line-height: 1.5;">
-        <h2>Signal received, ${name}.</h2>
-        <p>We’ve received your application. We review applications weekly. You will receive an email when your application gets reviewed.</p>
-        <p style="color:#666; font-size:12px;">— Thinkspace</p>
+        <h2>Signal received, ${safeName}.</h2>
+        <p>Welcome to Thinkspace! We hope you engage with the community and find your people here.</p>
+        <p style="margin:20px 0;">
+          <a href="${waLinkSafe}" target="_blank" rel="noreferrer" style="display:inline-block;background:#22c55e;color:#ffffff;text-decoration:none;font-weight:800;font-size:14px;line-height:1;padding:12px 18px;border:2px solid #0b0b0c;border-radius:0;">Join on WhatsApp</a>
+        </p>
+        <div style="margin-top:8px;padding:16px 18px;border:2px solid #0b0b0c;background:#ffffff;">
+          <div style="font-weight:900;color:#0b0b0c;font-size:13px;letter-spacing:0.02em;margin-bottom:10px;">Group rules</div>
+          <ul style="margin:0;padding-left:20px;color:#2b2b2e;font-size:14px;line-height:1.7;">
+            <li style="margin-bottom:8px;color:#2b2b2e;">Self promotion is allowed, and encouraged — but with proper captioning and explanation. (1 per day per user)</li>
+            <li style="margin-bottom:8px;color:#2b2b2e;">Don’t spam links, or messages, or invites to other groups.</li>
+            <li style="margin-bottom:8px;color:#2b2b2e;">AI generated art/videos are not encouraged.</li>
+            <li style="color:#2b2b2e;">Ethical use of AI + still using your brain is encouraged.</li>
+          </ul>
+        </div>
+        <p style="margin-top:16px;color:#2b2b2e;font-size:12px;line-height:1.5;">
+          If the button doesn’t work, copy/paste this link:<br />
+          <a href="${waLinkSafe}" target="_blank" rel="noreferrer" style="color:#0b0b0c;word-break:break-all;font-weight:800;">${waLinkSafe}</a>
+        </p>
       </div>
     `,
   });
